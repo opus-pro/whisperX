@@ -1,5 +1,4 @@
 import os
-import warnings
 from typing import List, Union, Optional, NamedTuple
 
 import ctranslate2
@@ -10,7 +9,7 @@ from transformers import Pipeline
 from transformers.pipelines.pt_utils import PipelineIterator
 
 from .audio import N_SAMPLES, SAMPLE_RATE, load_audio, log_mel_spectrogram
-from .vad import load_vad_model, merge_chunks
+import whisperx.vad_models
 from .types import TranscriptionResult, SingleSegment
 
 def find_numeral_symbol_tokens(tokenizer):
@@ -183,6 +182,13 @@ class FasterWhisperPipeline(Pipeline):
                 # print(f2-f1)
                 yield {'inputs': audio[f1:f2]}
 
+        if issubclass(type(self.vad_model), whisperx.vad_models.Vad):
+            waveform = self.vad_model.preprocess_audio(audio)
+            merge_chunks =  self.vad_model.merge_chunks
+        else:
+            waveform = whisperx.vad_models.Pyannote.preprocess_audio(audio)
+            merge_chunks = whisperx.vad_models.Pyannote.merge_chunks
+
         vad_segments = self.vad_model({"waveform": torch.from_numpy(audio).unsqueeze(0), "sample_rate": SAMPLE_RATE})
         vad_segments = merge_chunks(
             vad_segments,
@@ -265,6 +271,7 @@ def load_model(whisper_arch,
                asr_options=None,
                language : Optional[str] = None,
                vad_model=None,
+               vad_method=None,
                vad_options=None,
                model : Optional[WhisperModel] = None,
                task="transcribe",
@@ -276,6 +283,7 @@ def load_model(whisper_arch,
         whisper_arch: str - The name of the Whisper model to load.
         device: str - The device to load the model on.
         compute_type: str - The compute type to use for the model.
+        vad_method: str - The vad method to use. vad_model has higher priority if is not None.
         options: dict - A dictionary of options to use for the model.
         language: str - The language of the model. (use English for now)
         model: Optional[WhisperModel] - The WhisperModel instance to use.
@@ -341,6 +349,7 @@ def load_model(whisper_arch,
     default_asr_options = faster_whisper.transcribe.TranscriptionOptions(**default_asr_options)
 
     default_vad_options = {
+        "chunk_size": 30,
         "vad_onset": 0.500,
         "vad_offset": 0.363
     }
@@ -349,9 +358,14 @@ def load_model(whisper_arch,
         default_vad_options.update(vad_options)
 
     if vad_model is not None:
+        print("Use manually assigned vad_model. vad_method is ignored.")
         vad_model = vad_model
     else:
-        vad_model = load_vad_model(torch.device(device), use_auth_token=None, **default_vad_options)
+        match vad_method:
+            case "silero":
+                vad_model = whisperx.vad_models.Silero(**default_vad_options)
+            case "pyannote" | _:
+                vad_model = whisperx.vad_models.Pyannote(torch.device(device), use_auth_token=None, **default_vad_options)
 
     return FasterWhisperPipeline(
         model=model,
