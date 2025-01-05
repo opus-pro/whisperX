@@ -1,5 +1,7 @@
 import os
-from typing import List, Optional, Union
+import warnings
+from typing import List, NamedTuple, Optional, Union
+from dataclasses import replace
 
 import ctranslate2
 import faster_whisper
