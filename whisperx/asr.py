@@ -12,9 +12,9 @@ from transformers.pipelines.pt_utils import PipelineIterator
 
 from .audio import N_SAMPLES, SAMPLE_RATE, load_audio, log_mel_spectrogram
 from .types import SingleSegment, TranscriptionResult
+from .vad_models import Vad
 from .vad_models.pyannote import VoiceActivitySegmentation, Pyannote
 from .vad_models.silero import Silero
-from .vad_models import Vad
 
 
 def find_numeral_symbol_tokens(tokenizer):
@@ -250,7 +250,7 @@ class FasterWhisperPipeline(Pipeline):
             print(f"Suppressing numeral and symbol tokens")
             new_suppressed_tokens = numeral_symbol_tokens + self.options.suppress_tokens
             new_suppressed_tokens = list(set(new_suppressed_tokens))
-            self.options = self.options._replace(suppress_tokens=new_suppressed_tokens)
+            self.options.suppress_tokens = new_suppressed_tokens
 
         segments: List[SingleSegment] = []
         batch_size = batch_size or self._batch_size
