@@ -1,7 +1,6 @@
 import os
-import warnings
-from typing import List, NamedTuple, Optional, Union
 from dataclasses import replace
+from typing import List, Optional, Union
 
 import ctranslate2
 import faster_whisper
@@ -387,8 +386,8 @@ def load_model(
 
     default_vad_options = {
         "chunk_size": 30,
-        "vad_onset": 0.001,
-        "vad_offset": 0.001
+        "vad_onset": 0.500,
+        "vad_offset": 0.363
     }
 
     if vad_options is not None:
