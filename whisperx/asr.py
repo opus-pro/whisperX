@@ -279,7 +279,7 @@ class FasterWhisperPipeline(Pipeline):
 
         # revert suppressed tokens if suppress_numerals is enabled
         if self.suppress_numerals:
-            self.options = self.options._replace(suppress_tokens=previous_suppress_tokens)
+            self.options.suppress_tokens = previous_suppress_tokens
 
         return {"segments": segments, "language": language}
 
