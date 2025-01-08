@@ -46,7 +46,7 @@ def load_vad_model(device, vad_onset=0.500, vad_offset=0.363, use_auth_token=Non
             "Model has been downloaded but the SHA256 checksum does not match. Please retry loading the model."
         )
 
-    vad_model = Model.from_pretrained(model_fp, use_auth_token=use_auth_token)
+    vad_model = Model.from_pretrained(model_fp, use_auth_token=use_auth_token, local_files_only=True)
     hyperparameters = {"onset": vad_onset, 
                     "offset": vad_offset,
                     "min_duration_on": 0.1,
@@ -250,22 +250,12 @@ class Pyannote(Vad):
         if os.path.exists(model_fp) and not os.path.isfile(model_fp):
             raise RuntimeError(f"{model_fp} exists and is not a regular file")
 
-        if not os.path.isfile(model_fp):
-            with urllib.request.urlopen(VAD_SEGMENTATION_URL) as source, open(model_fp, "wb") as output:
-                with tqdm(
-                        total=int(source.info().get("Content-Length")),
-                        ncols=80,
-                        unit="iB",
-                        unit_scale=True,
-                        unit_divisor=1024,
-                ) as loop:
-                    while True:
-                        buffer = source.read(8192)
-                        if not buffer:
-                            break
+        # Check if the resolved model file exists
+        if not os.path.exists(model_fp):
+            raise FileNotFoundError(f"Model file not found at {model_fp}")
 
-                        output.write(buffer)
-                        loop.update(len(buffer))
+        if os.path.exists(model_fp) and not os.path.isfile(model_fp):
+            raise RuntimeError(f"{model_fp} exists and is not a regular file")
 
         model_bytes = open(model_fp, "rb").read()
         if hashlib.sha256(model_bytes).hexdigest() != VAD_SEGMENTATION_URL.split('/')[-2]:
