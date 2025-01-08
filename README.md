@@ -278,7 +278,7 @@ Bug finding and pull requests are also highly appreciated to keep this project g
 
 * [ ] Add benchmarking code (TEDLIUM for spd/WER & word segmentation)
 
-* [ ] Allow silero-vad as alternative VAD option
+* [x] Allow silero-vad as alternative VAD option
 
 * [ ] Improve diarization (word level). *Harder than first thought...*
 

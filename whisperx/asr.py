@@ -306,7 +306,7 @@ def load_model(
     asr_options: Optional[dict] = None,
     language: Optional[str] = None,
     vad_model: Optional[VoiceActivitySegmentation] = None,
-    vad_method: Optional[str] = 'silero',
+    vad_method: Optional[str] = 'pyannote',
     vad_options: Optional[dict] = None,
     model: Optional[WhisperModel] = None,
     task="transcribe",
