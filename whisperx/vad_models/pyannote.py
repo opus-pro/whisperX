@@ -1,6 +1,5 @@
 import hashlib
 import os
-import urllib
 from typing import Callable, Text, Union
 from typing import Optional
 
@@ -12,7 +11,6 @@ from pyannote.audio.pipelines import VoiceActivityDetection
 from pyannote.audio.pipelines.utils import PipelineModel
 from pyannote.core import Annotation, SlidingWindowFeature
 from pyannote.core import Segment
-from tqdm import tqdm
 
 from whisperx.diarize import Segment as SegmentX
 from whisperx.vad_models.vad import Vad
@@ -22,13 +20,12 @@ VAD_SEGMENTATION_URL = "https://whisperx.s3.eu-west-2.amazonaws.com/model_weight
 
 def load_vad_model(device, vad_onset=0.500, vad_offset=0.363, use_auth_token=None, model_fp=None):
     model_dir = torch.hub._get_torch_home()
-
     vad_dir = os.path.dirname(os.path.abspath(__file__))
-
     os.makedirs(model_dir, exist_ok = True)
+
     if model_fp is None:
         # Dynamically resolve the path to the model file
-        model_fp = os.path.join(vad_dir, "assets", "pytorch_model.bin")
+        model_fp = os.path.join(vad_dir, "..", "assets", "pytorch_model.bin")
         model_fp = os.path.abspath(model_fp)  # Ensure the path is absolute
     else:
         model_fp = os.path.abspath(model_fp)  # Ensure any provided path is absolute
@@ -244,9 +241,11 @@ class Pyannote(Vad):
         super().__init__(kwargs['vad_onset'])
 
         model_dir = torch.hub._get_torch_home()
+        vad_dir = os.path.dirname(os.path.abspath(__file__))
         os.makedirs(model_dir, exist_ok=True)
+
         if model_fp is None:
-            model_fp = os.path.join(model_dir, "assets", "pytorch_model.bin")
+            model_fp = os.path.join(vad_dir, "..", "assets", "pytorch_model.bin")
             model_fp = os.path.abspath(model_fp)  # Ensure the path is absolute
         else:
             model_fp = os.path.abspath(model_fp)  # Ensure any provided path is absolute
