@@ -238,7 +238,6 @@ class VoiceActivitySegmentation(VoiceActivityDetection):
         return segmentations
 
 class Pyannote(Vad):
-
     def __init__(self, device, use_auth_token=None, model_fp=None, **kwargs):
         print("Performing voice activity detection using Pyannote...")
         print(f"Pyannote kwargs: {kwargs}")
@@ -247,7 +246,11 @@ class Pyannote(Vad):
         model_dir = torch.hub._get_torch_home()
         os.makedirs(model_dir, exist_ok=True)
         if model_fp is None:
-            model_fp = os.path.join(model_dir, "whisperx-vad-segmentation.bin")
+            model_fp = os.path.join(model_dir, "assets", "pytorch_model.bin")
+            model_fp = os.path.abspath(model_fp)  # Ensure the path is absolute
+        else:
+            model_fp = os.path.abspath(model_fp)  # Ensure any provided path is absolute
+
         if os.path.exists(model_fp) and not os.path.isfile(model_fp):
             raise RuntimeError(f"{model_fp} exists and is not a regular file")
 
