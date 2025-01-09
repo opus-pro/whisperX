@@ -385,8 +385,8 @@ def load_model(
 
     default_vad_options = {
         "chunk_size": 30,
-        "vad_onset": 0.500,
-        "vad_offset": 0.363
+        "vad_onset": 0.001,
+        "vad_offset": 0.001
     }
 
     if vad_options is not None:
