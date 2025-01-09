@@ -240,7 +240,8 @@ class VoiceActivitySegmentation(VoiceActivityDetection):
 class Pyannote(Vad):
 
     def __init__(self, device, use_auth_token=None, model_fp=None, **kwargs):
-        print(">>Performing voice activity detection using Pyannote...")
+        print("Performing voice activity detection using Pyannote...")
+        print(f"Pyannote kwargs: {kwargs}")
         super().__init__(kwargs['vad_onset'])
 
         model_dir = torch.hub._get_torch_home()

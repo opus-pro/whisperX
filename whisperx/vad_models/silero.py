@@ -15,7 +15,8 @@ AudioFile = Union[Text, Path, IOBase, Mapping]
 class Silero(Vad):
     # check again default values
     def __init__(self, **kwargs):
-        print(">>Performing voice activity detection using Silero...")
+        print("Performing voice activity detection using Silero...")
+        print(f"Silero kwargs: {kwargs}")
         super().__init__(kwargs['vad_onset'])
 
         self.vad_onset = kwargs['vad_onset']
