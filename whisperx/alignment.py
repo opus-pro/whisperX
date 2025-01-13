@@ -28,14 +28,16 @@ PUNKT_ABBREVIATIONS = ['dr', 'vs', 'mr', 'mrs', 'prof']
 LANGUAGES_WITHOUT_SPACES = ["ja", "zh"]
 
 DEFAULT_ALIGN_MODELS_TORCH = {
-    "en": "WAV2VEC2_ASR_BASE_960H",
+    # "en": "WAV2VEC2_ASR_LARGE_LV60K_960H", # use HF model instead
     "fr": "VOXPOPULI_ASR_BASE_10K_FR",
     "de": "VOXPOPULI_ASR_BASE_10K_DE",
     "es": "VOXPOPULI_ASR_BASE_10K_ES",
-    "it": "VOXPOPULI_ASR_BASE_10K_IT",
+    # "it": "VOXPOPULI_ASR_BASE_10K_IT", # use HF model instead
 }
 
 DEFAULT_ALIGN_MODELS_HF = {
+    "it": "jonatasgrosman/wav2vec2-large-xlsr-53-italian",
+    "en": "jonatasgrosman/wav2vec2-large-xlsr-53-english",
     "ja": "jonatasgrosman/wav2vec2-large-xlsr-53-japanese",
     "zh": "jonatasgrosman/wav2vec2-large-xlsr-53-chinese-zh-cn",
     "nl": "jonatasgrosman/wav2vec2-large-xlsr-53-dutch",
@@ -46,28 +48,31 @@ DEFAULT_ALIGN_MODELS_HF = {
     "ru": "jonatasgrosman/wav2vec2-large-xlsr-53-russian",
     "pl": "jonatasgrosman/wav2vec2-large-xlsr-53-polish",
     "hu": "jonatasgrosman/wav2vec2-large-xlsr-53-hungarian",
-    "fi": "jonatasgrosman/wav2vec2-large-xlsr-53-finnish",
+    "fi": "Finnish-NLP/wav2vec2-xlsr-1b-finnish-lm-v2",
     "fa": "jonatasgrosman/wav2vec2-large-xlsr-53-persian",
     "el": "jonatasgrosman/wav2vec2-large-xlsr-53-greek",
     "tr": "mpoyraz/wav2vec2-xls-r-300m-cv7-turkish",
-    "da": "saattrupdan/wav2vec2-xls-r-300m-ftspeech",
+    "da": "NbAiLab/wav2vec2-large-danish-npsc-nst",
     "he": "imvladikon/wav2vec2-xls-r-300m-hebrew",
-    "vi": 'nguyenvulebinh/wav2vec2-base-vi',
+    "vi": "nguyenvulebinh/wav2vec2-base-vi",
     "ko": "kresnik/wav2vec2-large-xlsr-korean",
     "ur": "kingabzpro/wav2vec2-large-xls-r-300m-Urdu",
     "te": "anuragshas/wav2vec2-large-xlsr-53-telugu",
     "hi": "theainerd/Wav2Vec2-large-xlsr-hindi",
     "ca": "softcatala/wav2vec2-large-xlsr-catala",
-    "ml": "gvs/wav2vec2-large-xlsr-malayalam",
-    "no": "NbAiLab/nb-wav2vec2-1b-bokmaal-v2",
-    "nn": "NbAiLab/nb-wav2vec2-1b-nynorsk",
-    "sk": "comodoro/wav2vec2-xls-r-300m-sk-cv8",
-    "sl": "anton-l/wav2vec2-large-xlsr-53-slovenian",
-    "hr": "classla/wav2vec2-xls-r-parlaspeech-hr",
-    "ro": "gigant/romanian-wav2vec2",
-    "eu": "stefan-it/wav2vec2-large-xlsr-53-basque",
-    "gl": "ifrz/wav2vec2-large-xlsr-galician",
-    "ka": "xsway/wav2vec2-large-xlsr-georgian",
+    "ml": "Harveenchadha/vakyansh-wav2vec2-malayalam-mlm-8",
+    "no": "NbAiLab/nb-wav2vec2-1b-bokmaal",
+    "nn": "NbAiLab/nb-wav2vec2-300m-nynorsk",
+    "id": "Bagus/wav2vec2-large-xlsr-bahasa-indonesia",
+    "ta": "Harveenchadha/vakyansh-wav2vec2-tamil-tam-250",
+    "bn": "auditi41/wav2vec2-large-xlsr-53-Bangla-Common_Voice",
+    "ms": "mesolitica/wav2vec2-xls-r-300m-mixed",
+    "bg": "infinitejoy/wav2vec2-large-xls-r-300m-bulgarian",
+    "jw": "indonesian-nlp/wav2vec2-indonesian-javanese-sundanese",
+    "ro": "anton-l/wav2vec2-large-xlsr-53-romanian",
+    "lt": "DeividasM/wav2vec2-large-xlsr-53-lithuanian",
+    "et": "anton-l/wav2vec2-large-xlsr-53-estonian",
+    "tl": "Khalsuu/filipino-wav2vec2-l-xls-r-300m-official",
 }
 
 
@@ -91,8 +96,8 @@ def load_align_model(language_code: str, device: str, model_name: Optional[str] 
         align_dictionary = {c.lower(): i for i, c in enumerate(labels)}
     else:
         try:
-            processor = Wav2Vec2Processor.from_pretrained(model_name, cache_dir=model_dir)
-            align_model = Wav2Vec2ForCTC.from_pretrained(model_name, cache_dir=model_dir)
+            processor = Wav2Vec2Processor.from_pretrained(model_name, cache_dir=model_dir, local_files_only=True)
+            align_model = Wav2Vec2ForCTC.from_pretrained(model_name, cache_dir=model_dir, local_files_only=True)
         except Exception as e:
             print(e)
             print(f"Error loading model from huggingface, check https://huggingface.co/models for finetuned wav2vec2.0 models")
