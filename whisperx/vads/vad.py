@@ -29,7 +29,11 @@ class Vad:
         seg_idxs: list[tuple]= []
         speaker_idxs: list[Optional[str]] = []
 
+        if not segments:
+            return merged_segments
+
         curr_start = segments[0].start
+
         for seg in segments:
             if seg.end - curr_start > chunk_size and curr_end - curr_start > 0:
                 merged_segments.append({
