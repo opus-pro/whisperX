@@ -74,6 +74,12 @@ DEFAULT_ALIGN_MODELS_HF = {
     "lt": "DeividasM/wav2vec2-large-xlsr-53-lithuanian",
     "et": "anton-l/wav2vec2-large-xlsr-53-estonian",
     "tl": "Khalsuu/filipino-wav2vec2-l-xls-r-300m-official",
+    "sk": "comodoro/wav2vec2-xls-r-300m-sk-cv8",
+    "sl": "anton-l/wav2vec2-large-xlsr-53-slovenian",
+    "hr": "classla/wav2vec2-xls-r-parlaspeech-hr",
+    "eu": "stefan-it/wav2vec2-large-xlsr-53-basque",
+    "gl": "ifrz/wav2vec2-large-xlsr-galician",
+    "ka": "xsway/wav2vec2-large-xlsr-georgian",
 }
 
 
