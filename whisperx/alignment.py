@@ -432,6 +432,10 @@ def get_wildcard_emission(frame_emission, tokens, blank_id):
     # Create a mask to identify wildcard positions
     wildcard_mask = (tokens == -1)
 
+    # Convert tokens to long if they are not already
+    if torch.is_floating_point(tokens):
+        tokens = tokens.long()
+
     # Get scores for non-wildcard positions
     regular_scores = frame_emission[tokens.clamp(min=0)]  # clamp to avoid -1 index
 
